@@ -5,11 +5,11 @@ class Aspecter(type):
     aspect_rules = []
     wrapped_methods = []
 
-    def __new__(mcs, name, bases, _dict):
-        for key, value in _dict.items():
+    def __new__(mcs, name, bases, dct):
+        for key, value in dct.items():
             if hasattr(value, "__call__") and key != "__metaclass__":
-                _dict[key] = Aspecter.wrap_method(value)
-        return type.__new__(mcs, name, bases, _dict)
+                dct[key] = Aspecter.wrap_method(value)
+        return type.__new__(mcs, name, bases, dct)
 
     @classmethod
     def register(mcs, name_pattern="", in_objects=(), out_objects=(),
@@ -37,7 +37,7 @@ class Aspecter(type):
     @classmethod
     def matching_names(mcs, method):
         return [rule for rule in mcs.aspect_rules
-                if re.match(rule["name_pattern"], method.func_name)
+                if re.match(rule["name_pattern"], method.__name__)
                 or rule["name_pattern"] == ""
                 ]
 
@@ -68,8 +68,7 @@ if __name__ == "__main__":
             return "Address..."
 
 
-    class Person(object):
-        __metaclass__ = Aspecter
+    class Person(object, metaclass=Aspecter):
 
         def updateAddress(self, address):
             pass
