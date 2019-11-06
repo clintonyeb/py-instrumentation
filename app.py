@@ -1,14 +1,14 @@
 import re
 
 
-class Aspecter(type):
+class Aspect(type):
     aspect_rules = []
     wrapped_methods = []
 
     def __new__(mcs, name, bases, dct):
         for key, value in dct.items():
             if hasattr(value, "__call__") and key != "__metaclass__":
-                dct[key] = Aspecter.wrap_method(value)
+                dct[key] = Aspect.wrap_method(value)
         return type.__new__(mcs, name, bases, dct)
 
     @classmethod
@@ -68,7 +68,7 @@ if __name__ == "__main__":
             return "Address..."
 
 
-    class Person(object, metaclass=Aspecter):
+    class Person(object, metaclass=Aspect):
 
         def updateAddress(self, address):
             pass
@@ -87,8 +87,8 @@ if __name__ == "__main__":
         print(addresses)
 
 
-    Aspecter.register(name_pattern="^update.*", pre_function=log_update)
-    Aspecter.register(in_objects=(Address,), pre_function=log_address)
+    Aspect.register(name_pattern="^update.*", pre_function=log_update)
+    Aspect.register(in_objects=(Address,), pre_function=log_address)
 
     p = Person()
     p.updateAddress(Address())
