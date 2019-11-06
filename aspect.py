@@ -5,7 +5,7 @@ import inspect
 
 FORMAT = '%(asctime)s %(message)s'
 log = logging.getLogger(__name__)
-logging.basicConfig(filename='method-calls.log', level=logging.DEBUG, format=FORMAT)
+logging.basicConfig(filename='method-calls.log', level=logging.DEBUG, format=FORMAT, datefmt='%m/%d/%Y %I:%M:%S %p')
 
 
 @aspectlib.Aspect(bind=True)
